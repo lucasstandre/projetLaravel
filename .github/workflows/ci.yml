@@ -31,3 +31,12 @@ jobs:
       - name: Lancer les tests
         run: php artisan test
 
+      - name : Tests avec couverture HTML
+        run: php artisan test --coverage-html reports/coverage
+      - name: Publier le rapport de couverture
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: reports/coverage
+
+

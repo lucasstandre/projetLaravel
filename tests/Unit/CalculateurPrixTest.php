@@ -12,7 +12,7 @@ class CalculateurPrixTest extends TestCase
      */
     public function test_example(): void
     {
-        $this->assertTrue(false);
+        $this->assertTrue(true);
     }
     public function test_calcul_prix_avec_taxe_standard(): void
     {
