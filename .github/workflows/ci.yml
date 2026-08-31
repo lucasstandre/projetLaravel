@@ -73,3 +73,5 @@ jobs:
         with:
           name: coverage-report
           path: reports/coverage
+      - name: Audit des dependances
+        run: composer audit
