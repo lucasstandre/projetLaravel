@@ -23,7 +23,6 @@ class CalculateurPrix
         return round($prixHT * (1 + $tauxTaxe), 2);
     }
 
-
     /**
      * Applique une remise en pourcentage sur un prix.
      * La remise ne peut pas rendre le prix négatif.
