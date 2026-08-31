@@ -43,6 +43,9 @@ jobs:
       - name: Analyse statique PHPStan
         run: ./vendor/bin/phpstan analyse --no-progress --memory-limit=512M
 
+        - name: Audit des dépendances
+        run: composer audit --abandoned=ignore --ignore-severity=low,moderate
+
   tests:
     runs-on: ubuntu-latest
     needs: [lint, analyse]
