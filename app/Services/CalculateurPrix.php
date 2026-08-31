@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use LDAP\Result;
-
 class CalculateurPrix
 {
     /**
@@ -14,12 +12,17 @@ class CalculateurPrix
      */
     public function calculerAvecTaxe(float $prixHT, float $tauxTaxe): float
     {
-        $resultat = null;
-        if ($tauxTaxe < 0 or $prixHT < 0) {
-            $resultat = round($prixHT*($tauxTaxe),2);
+        if ($tauxTaxe < 0) {
+            throw new \InvalidArgumentException('Le taux de taxe ne peut pas être négatif.');
         }
-        return $resultat;
+
+        if ($prixHT < 0) {
+            throw new \InvalidArgumentException('Le prix hors taxe ne peut pas être négatif.');
+        }
+
+        return round($prixHT * (1 + $tauxTaxe), 2);
     }
+
 
     /**
      * Applique une remise en pourcentage sur un prix.
