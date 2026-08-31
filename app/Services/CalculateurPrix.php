@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 class CalculateurPrix
@@ -9,17 +10,6 @@ class CalculateurPrix
      *
      * @throws \InvalidArgumentException si le taux est négatif
      */
-    public function calculerAvecTaxe(float $prixHT, float $tauxTaxe): float
-    {
-        if ($tauxTaxe < 0) {
-            throw new \InvalidArgumentException("Le taux de taxe ne peut pas être négatif.");
-        }
-        if ($prixHT < 0) {
-            throw new \InvalidArgumentException("Le prix HT ne peut pas être négatif.");
-        }
-
-        return round($prixHT * (1 + $tauxTaxe), 2);
-    }
 
     /**
      * Applique une remise en pourcentage sur un prix.
@@ -30,11 +20,11 @@ class CalculateurPrix
     public function appliquerRemise(float $prix, float $remisePourcentage): float
     {
         if ($remisePourcentage < 0) {
-            throw new \InvalidArgumentException("La remise ne peut pas être négative.");
+            throw new \InvalidArgumentException('La remise ne peut pas être négative.');
         }
 
         if ($prix < 0) {
-            throw new \InvalidArgumentException("Le prix ne peut pas être négatif.");
+            throw new \InvalidArgumentException('Le prix ne peut pas être négatif.');
         }
 
         $prixApresRemise = $prix - ($prix * $remisePourcentage / 100);
@@ -50,13 +40,24 @@ class CalculateurPrix
     public function respecteSeuilMinimum(float $prix, float $seuilMinimum): bool
     {
         if ($seuilMinimum < 0) {
-            throw new \InvalidArgumentException("Le seuil minimum ne peut pas être négatif.");
+            throw new \InvalidArgumentException('Le seuil minimum ne peut pas être négatif.');
         }
 
         if ($prix < 0) {
-            throw new \InvalidArgumentException("Le prix ne peut pas être négatif.");
+            throw new \InvalidArgumentException('Le prix ne peut pas être négatif.');
         }
 
         return $prix >= $seuilMinimum;
+    }
+
+    public function calculerAvecTaxe(float $prixHT, float $tauxTaxe): float
+    {
+        $resultat = null;
+        if ($tauxTaxe >= 0 and $prixHT >= 0) {
+            $resultat = round($prixHT * (1 + $tauxTaxe), 2);
+        }
+
+        return $resultat; // PHPStan : peut retourner null au lieu de float
+
     }
 }

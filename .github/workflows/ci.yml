@@ -1,16 +1,75 @@
-name: my first pipeline
+name: CI Laravel
+
 on:
   push:
-jobs:
-  bonjour:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dire bonjour
-        run: echo "Je suis le job bonjour"
+    branches: ["*"]
+  pull_request:
+    branches: [main]
 
-  aurevoir:
+jobs:
+  lint:
     runs-on: ubuntu-latest
-    needs: bonjour # attends que le job bonjour soit termine
     steps:
-      - name: Dire aurevoir
-        run: echo "Je suis le job aurevoir, bonjour est terminé"
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo, pdo_mysql, mbstring, bcmath, zip
+
+      - name: Installer les dÃ©pendances
+        run: composer install --no-interaction --prefer-dist
+
+      - name: VÃ©rifier le formatage avec Pint
+        run: ./vendor/bin/pint --test
+
+  analyse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo, pdo_mysql, mbstring, bcmath, zip
+
+      - name: Installer les dÃ©pendances
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Analyse statique PHPStan
+        run: ./vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [lint, analyse]
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo, pdo_mysql, mbstring, bcmath, zip
+          coverage: xdebug
+
+      - name: Installer les dÃ©pendances
+        run: composer install --no-interaction --prefer-dist
+
+      - name: PrÃ©parer le .env de test
+        run: |
+          cp .env.example .env.testing
+          php artisan key:generate --env=testing
+
+      - name: Tests avec couverture HTML
+        run: php artisan test --coverage-html reports/coverage
+
+      - name: Publier le rapport de couverture
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: reports/coverage
