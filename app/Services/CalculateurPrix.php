@@ -5,13 +5,6 @@ namespace App\Services;
 class CalculateurPrix
 {
     /**
-     * Calcule le prix TTC à partir d'un prix HT et d'un taux de taxe.
-     * Le taux de taxe est exprimé en décimal (ex: 0.15 pour 15%).
-     *
-     * @throws \InvalidArgumentException si le taux est négatif
-     */
-
-    /**
      * Applique une remise en pourcentage sur un prix.
      * La remise ne peut pas rendre le prix négatif.
      *
@@ -50,14 +43,22 @@ class CalculateurPrix
         return $prix >= $seuilMinimum;
     }
 
+    /**
+     * Calcule le prix TTC à partir d'un prix HT et d'un taux de taxe.
+     * Le taux de taxe est exprimé en décimal (ex: 0.15 pour 15%).
+     *
+     * @throws \InvalidArgumentException si le taux ou le prix est négatif
+     */
     public function calculerAvecTaxe(float $prixHT, float $tauxTaxe): float
     {
-        $resultat = null;
-        if ($tauxTaxe >= 0 and $prixHT >= 0) {
-            $resultat = round($prixHT * (1 + $tauxTaxe), 2);
+        if ($tauxTaxe < 0) {
+            throw new \InvalidArgumentException('Le taux de taxe ne peut pas être négatif.');
         }
 
-        return $resultat; // PHPStan : peut retourner null au lieu de float
+        if ($prixHT < 0) {
+            throw new \InvalidArgumentException('Le prix ne peut pas être négatif.');
+        }
 
+        return round($prixHT * (1 + $tauxTaxe), 2);
     }
 }
