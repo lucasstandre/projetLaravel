@@ -37,7 +37,7 @@ jobs:
           php-version: "8.4"
           extensions: pdo, pdo_mysql, mbstring, bcmath, zip
 
-      - name: Installer les dÃ©pendances
+      - name: Installer les dépendances
         run: composer install --no-interaction --prefer-dist
 
       - name: Analyse statique PHPStan
