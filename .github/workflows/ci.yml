@@ -10,7 +10,7 @@ jobs:
 
   aurevoir:
     runs-on: ubuntu-latest
-needs: bonjo # attends que le job bonjour soit termine
+    needs: bonjour # attends que le job bonjour soit termine
     steps:
       - name: Dire aurevoir
       run: echo "Je suis le job aurevoir, bonjour est terminé"
