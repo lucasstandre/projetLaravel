@@ -10,3 +10,5 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+RUN usermod -u 1002 www-data
+RUN groupmod -g 1002 www-data
