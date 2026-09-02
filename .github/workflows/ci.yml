@@ -82,6 +82,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment: staging
     steps:
+      - name : Smoke test
+        run : |
+            sleep 5 # laisser le temps à l'app de redémarrer
+            curl -f http://${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PORT }}/health || exit 1
       - name: Configurer la clé SSH
         run: |
           mkdir -p ~/.ssh
@@ -102,8 +106,5 @@ jobs:
           docker compose exec -T app php artisan migrate --force &&
           docker compose exec -T app php artisan optimize:clear
           "
-      - name : Smoke test
-        run : |
-            sleep 5 # laisser le temps à l'app de redémarrer
-            curl -f http://${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PORT }}/health || exit 1
+
 
