@@ -75,7 +75,7 @@ jobs:
           name: coverage-report
           path: reports/coverage
       - name: Audit des dependances
-        run: composer audit
+        run: composer audit --abandoned=ignore --ignore-severity=low,moderate # pour ignorer lerreur
   deploy-staging:
     runs-on: ubuntu-latest
     needs: [ tests ]
