@@ -32,6 +32,17 @@ services:
       - mysql_data:/var/lib/mysql   # volume nommÃ© pour persister les donnÃ©es
     networks:
       - laravel
+  node:
+    build: # utiliser le dockerfile
+        context: .
+        dockerfile: docker/node/Dockerfile
+    working_dir: /app
+    volumes:
+        - .:/app
+    entrypoint: ["tail", "-f", "/dev/null"]
+    networks:
+        - laravel
+
 
 volumes:
   mysql_data:                   # volume nommÃ© dÃ©clarÃ© ici
